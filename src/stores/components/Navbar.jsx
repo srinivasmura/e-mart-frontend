@@ -30,7 +30,7 @@ function Navbar() {
         </button>
 
         <span className="nav-mobile-brand">
-          <img src={logo} alt="E-Mart" style={{ height: '62px' }} />
+          <img src={logo} alt="E-Mart" style={{ height: '50px' }} />
         </span>
         <span className="nav-mobile-spacer" />
 

@@ -45,7 +45,7 @@ const Products = () => {
         <SearchBar onCategoryChange={setCategory} onSearchChange={setSearchText} />
       </div>
 
-      <div className="products container">
+      <div className="products container prod-grid">
         {filteredProducts.length === 0 && (
           <p style={{ textAlign: "center", color: "red", width: "100%" }}>No products found!</p>
         )}
@@ -54,34 +54,37 @@ const Products = () => {
           const inCart = cartItems.find(c => c.id === item.id);
           return (
             <div key={item.id} className="product-card">
-
-              {/* clicking image opens popup */}
-              <img
-                src={item.image}
-                alt={item.title}
-                width="120"
-                style={{ cursor: "pointer" }}
-                onClick={() => setSelectedProduct(item)}
-              />
-
-              <h3 className="pro-title">{item.title}</h3>
-              <div className="price-section flex-box">
-                <div className="price"><p>$ {item.price}</p></div>
-                <div className="rating"><p>Rating: {item.rating.rate}</p></div>
+              <div className="product-card-img-wrap">
+                {/* clicking image opens popup */}
+                <img
+                  className='product-card-img'
+                  src={item.image}
+                  alt={item.title}
+                  width="120"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setSelectedProduct(item)}
+                />
               </div>
-              <p className="description-section">{item.description}</p>
+              <div className="product-card-body">
+                <h3 className="product-card-title">{item.title}</h3>
+                <div className="price-section flex-box">
+                  <div className="price"><p>$ {item.price}</p></div>
+                  <div className="rating"><p>Rating: {item.rating.rate}</p></div>
+                </div>
+                <p className="description-section">{item.description}</p>
 
-              <button
-                className="cartbtn"
-                onClick={() => addToCart(item)}
-                style={{
-                  transition: "background 0.2s",
-                  background: inCart ? "#10B981" : undefined,
-                  color: inCart ? "#fff" : undefined,
-                }}
-              >
-                {inCart ? `✓ In Cart (${inCart.qty})` : "ADD TO CART"}
-              </button>
+                <button
+                  className="cartbtn"
+                  onClick={() => addToCart(item)}
+                  style={{
+                    transition: "background 0.2s",
+                    background: inCart ? "#10B981" : undefined,
+                    color: inCart ? "#fff" : undefined,
+                  }}
+                >
+                  {inCart ? `✓ In Cart (${inCart.qty})` : "ADD TO CART"}
+                </button>
+              </div>
             </div>
           );
         })}
