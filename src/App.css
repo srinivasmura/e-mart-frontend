@@ -133,16 +133,9 @@ ul li {
 
   >div {
     width: auto;
-    padding: 10px;
-    margin: 10px 10px;
     text-align: center;
+    gap: 16px;
 
-    img {
-      text-align: center;
-      width: 180px;
-      height: 200px;
-      margin-bottom: 10px;
-    }
   }
 }
 
@@ -3123,8 +3116,8 @@ select {
   margin: 0;
 
   img {
-    width: 130px;
-    height: 60px;
+    width: 110px;
+    height: 50px;
     margin: 3px;
   }
 }
@@ -3809,6 +3802,10 @@ select {
     font-weight: 700;
     color: #fff;
     letter-spacing: 0.02em;
+
+    img {
+      height: 30px !important;
+    }
   }
 }
 
@@ -3816,6 +3813,8 @@ select {
 @media (min-width: 769px) {
   .nav-mobile-brand {
     display: none;
+
+
   }
 
   .nav-hamburger {
