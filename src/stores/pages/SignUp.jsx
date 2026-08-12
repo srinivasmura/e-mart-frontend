@@ -58,36 +58,84 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ name: true, email: true, password: true, confirmPassword: true });
+
+    setTouched({
+      name: true,
+      email: true,
+      password: true,
+      confirmPassword: true,
+    });
+
     const validationErrors = validate();
+
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
 
     setIsLoading(true);
-    setTimeout(() => {
-      const normalizedEmail = email.toLowerCase();
 
-      const storedUsers = JSON.parse(localStorage.getItem("userCredentials") || "{}");
+    try {
+      // Convert Full Name into first_name and last_name
+      const nameParts = name.trim().split(/\s+/);
 
-      if (storedUsers[normalizedEmail]) {
-        setErrors({ form: "An account with this email already exists. Please sign in instead." });
-        setIsLoading(false);
+      const first_name = nameParts[0];
+      const last_name = nameParts.slice(1).join(" ");
+
+      // Backend requires both first_name and last_name
+      if (!last_name) {
+        setErrors({
+          name: "Please enter your first and last name.",
+        });
         return;
       }
 
-      // Save password (used by Login.jsx) and name (for profile/greeting use)
-      storedUsers[normalizedEmail] = password;
-      localStorage.setItem("userCredentials", JSON.stringify(storedUsers));
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            first_name,
+            last_name,
+            email: email.trim().toLowerCase(),
+            password,
+          }),
+        }
+      );
 
-      const storedNames = JSON.parse(localStorage.getItem("userNames") || "{}");
-      storedNames[normalizedEmail] = name.trim();
-      localStorage.setItem("userNames", JSON.stringify(storedNames));
+      const data = await response.json();
 
+      if (!response.ok) {
+        setErrors({
+          form: data.message || "Unable to create your account.",
+        });
+
+        return;
+      }
+
+      // Registration successful
+      navigate("/login", {
+        replace: true,
+        state: {
+          signupSuccess: true,
+          message: "Account created successfully. Please sign in.",
+        },
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+
+      setErrors({
+        form: "Unable to connect to the server. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-      navigate("/login", { replace: true, state: { signupSuccess: true } });
-    }, 800);
+    }
   };
 
   return (

@@ -40,30 +40,77 @@ const Login = () => {
     }
   };
 
-  const handleLogin = (e) => {
+  //Login authentication 
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setTouched({ email: true, password: true });
+
+    setTouched({
+      email: true,
+      password: true,
+    });
+
     const validationErrors = validate();
+
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
 
     setIsLoading(true);
-    setTimeout(() => {
-      // If this email has a password set via Forgot Password / Reset Password,
-      // it must match. Otherwise (no reset done) any valid password is accepted.
-      const storedUsers = JSON.parse(localStorage.getItem("userCredentials") || "{}");
-      const storedPassword = storedUsers[email.toLowerCase()];
 
-      if (storedPassword && storedPassword !== password) {
-        setErrors({ form: "Invalid email or password. Please try again." });
-        setIsLoading(false);
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email.trim(),
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({
+          form: data.message || "Invalid email or password.",
+        });
+
         return;
       }
 
+      // Store JWT token
+      localStorage.setItem("token", data.token);
+
+      // Store logged-in user
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+      // Keep email for existing frontend usage
+      localStorage.setItem("userEmail", data.user.email);
+
+      // Existing login flag
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userEmail", email);
-      navigate("/home", { replace: true });
-    }, 800);
+
+      navigate("/home", {
+        replace: true,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+
+      setErrors({
+        form: "Unable to connect to the server. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
