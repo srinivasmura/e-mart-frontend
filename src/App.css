@@ -1294,20 +1294,65 @@ select {
 /* ═══════════════════════════════════════════════
    HOME — TOAST MESSAGE
 ═══════════════════════════════════════════════ */
-.toast-msg {
+/* ─── Toast notification ─── */
+.toast {
   position: fixed;
-  right: 24px;
-  z-index: 1000;
-  background: #10B981;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.35);
-  animation: toastIn 0.3s ease;
-  max-width: 280px;
-  font-family: 'Sora', sans-serif;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 360px;
+  animation: toast-slide-in 0.25s ease-out;
+}
+
+.toast--success {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin-left: 4px;
+  opacity: 0.85;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .toast {
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    max-width: none;
+  }
 }
 
 /* ═══════════════════════════════════════════════

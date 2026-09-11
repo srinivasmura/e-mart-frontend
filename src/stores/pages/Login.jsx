@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from '../../assets/e-mart-logo.png';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../config/api";
+import Toast from "../components/Toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [showSignupToast, setShowSignupToast] = useState(
+    Boolean(location.state?.signupSuccess)
+  );
+
+  // Clear the navigation state once read, so the toast doesn't
+  // reappear if the user refreshes or navigates back to this page.
+  useEffect(() => {
+    if (location.state?.signupSuccess) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -116,6 +132,15 @@ const Login = () => {
 
   return (
     <div className="login-page" style={{ marginTop: '-65px' }}>
+      <Toast
+        message={
+          showSignupToast
+            ? "You have successfully signed up! You can now log in with this email and password."
+            : null
+        }
+        onClose={() => setShowSignupToast(false)}
+      />
+
       <div className="login-card">
 
         {/* Brand */}
